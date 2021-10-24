@@ -16,12 +16,12 @@ namespace PrayerTime
     {
         private readonly ILogger<Handlers> _logger;
         private readonly IStorageService _storage;
-        private static float _longitude;
-        private static float _latitude;
-        public Handlers(ILogger<Handlers> logger, IStorageService storage)
+        private readonly TimingsByLLService _timings;
+        public Handlers(ILogger<Handlers> logger, IStorageService storage, TimingsByLLService timings)
         {
             _logger = logger;
             _storage = storage;
+            _timings = timings;
         }
 
         public Task HandleErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken ctoken)
@@ -109,10 +109,12 @@ namespace PrayerTime
                     replyToMessageId: message.MessageId,
                     replyMarkup: Buttons.MenuButtons()
                 );
-                _longitude = message.Location.Longitude;
-                _latitude = message.Location.Latitude;
-                Console.WriteLine($"{_latitude} {_longitude} from @{message.From.Username}");
+                var user = await _storage.GetUserAsync(message.Chat.Id);
+                user.Longitude = message.Location.Longitude;
+                user.Latitude = message.Location.Latitude;
+                await _storage.UpdateUserAsync(user);
             }
+            var _user = await _storage.GetUserAsync(message.Chat.Id);
             var a = message.Text switch
             {
                 "/start"    => await client.SendTextMessageAsync(
@@ -125,6 +127,11 @@ namespace PrayerTime
                                 "Settings",
                                 ParseMode.Markdown,
                                 replyMarkup: Buttons.SettingsButtons()),
+                "Today"     => await client.SendTextMessageAsync(
+                                message.Chat.Id,
+                                await _timings.getTodayTimings(_user.Longitude ,_user.Latitude),
+                                ParseMode.Markdown,
+                                replyMarkup: Buttons.MenuButtons()),
                 "Back to menu" => await client.SendTextMessageAsync(
                                 message.Chat.Id,
                                 "Back to menu",

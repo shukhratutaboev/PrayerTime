@@ -9,13 +9,13 @@ namespace PrayerTime.Entity
         public long ChatID {get; set;}
         public string Username {get; set;}
         public string Fullname {get; set;}
-        public double Longitude {get; set;}
-        public double Latitude {get; set;}
+        public float Longitude {get; set;}
+        public float Latitude {get; set;}
         
         [Obsolete("Used only for Entity binding!")]
         public BotUser() {}
 
-        public BotUser(long chatId, string username, string fullname, double longitude, double latitude)
+        public BotUser(long chatId, string username, string fullname, float longitude, float latitude)
         {
             ChatID = chatId;
             Username = username;
