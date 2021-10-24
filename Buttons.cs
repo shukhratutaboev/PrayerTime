@@ -24,7 +24,8 @@ namespace PrayerTime
                 {
                     new List<KeyboardButton>{ new KeyboardButton { Text = "Today"}, new KeyboardButton {Text = "Tomorrow"}},
                     new List<KeyboardButton>{ new KeyboardButton {Text = "Next prayer time"}, new KeyboardButton {Text = "Settings"}}
-                }
+                },
+                ResizeKeyboard = true
             };
         }
         public static IReplyMarkup SettingsButtons()
@@ -35,7 +36,8 @@ namespace PrayerTime
                 {
                     new List<KeyboardButton>{ new KeyboardButton { Text = "Reset location", RequestLocation = true }, new KeyboardButton {Text = "Turn on notifications"}},
                     new List<KeyboardButton>{ new KeyboardButton {Text = "Change language"}, new KeyboardButton {Text = "Back to menu"}}
-                }
+                },
+                ResizeKeyboard = true
             };
         }
     }
