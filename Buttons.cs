@@ -28,13 +28,22 @@ namespace PrayerTime
                 ResizeKeyboard = true
             };
         }
-        public static IReplyMarkup SettingsButtons()
+        public static IReplyMarkup SettingsButtons(bool notifications)
         {
+            string notificationsButton;
+            if(notifications)
+            {
+                notificationsButton = "Bildirishnomalarni o'chirish";
+            }
+            else
+            {
+                notificationsButton = "Bildirishnomalarni yoqish";
+            }
             return new ReplyKeyboardMarkup
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = "Lokatsiyani yangilash", RequestLocation = true }, new KeyboardButton {Text = "Bildirishnomalarni yoqish"}},
+                    new List<KeyboardButton>{ new KeyboardButton { Text = "Lokatsiyani yangilash", RequestLocation = true }, new KeyboardButton {Text = notificationsButton}},
                     new List<KeyboardButton>{ new KeyboardButton {Text = "Menyuga qaytish"}}
                 },
                 ResizeKeyboard = true

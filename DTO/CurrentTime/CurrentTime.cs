@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace PrayerTime.DTO.CurrentTime
 {
-    public class Root
+    public class CurrentTime
     {
         [JsonPropertyName("code")]
         public int Code { get; set; }

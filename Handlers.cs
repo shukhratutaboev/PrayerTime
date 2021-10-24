@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -128,7 +127,7 @@ namespace PrayerTime
                                     message.Chat.Id,
                                     "Sozlamalardan birini tanlang",
                                     ParseMode.Markdown,
-                                    replyMarkup: Buttons.SettingsButtons()),
+                                    replyMarkup: Buttons.SettingsButtons(_user.Notifications)),
                     "Bugungi namoz vaqtlari"     => await client.SendTextMessageAsync(
                                     message.Chat.Id,
                                     await _timings.getTodayTimings(_user.Longitude ,_user.Latitude),
@@ -144,6 +143,16 @@ namespace PrayerTime
                                     "Back to menu",
                                     ParseMode.Markdown,
                                     replyMarkup: Buttons.MenuButtons()),
+                    "Bildirishnomalarni yoqish" => await client.SendTextMessageAsync(
+                                    message.Chat.Id,
+                                    $"Bildirishnomalar yoqildi{_user.setNotification()}",
+                                    ParseMode.Markdown,
+                                    replyMarkup: Buttons.SettingsButtons(_user.Notifications)),
+                    "Bildirishnomalarni o'chirish" => await client.SendTextMessageAsync(
+                                    message.Chat.Id,
+                                    $"Bildirishnomalar o'chirildi{_user.setNotification()}",
+                                    ParseMode.Markdown,
+                                    replyMarkup: Buttons.SettingsButtons(_user.Notifications)),
                     _           => await client.SendTextMessageAsync(
                                     message.Chat.Id,
                                     "Hozircha shu.",

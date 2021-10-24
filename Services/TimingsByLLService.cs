@@ -1,5 +1,4 @@
 using System;
-using System.Runtime.Serialization.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -26,12 +25,12 @@ namespace PrayerTime.Services
                 {
                     WriteIndented = true
                 };
-                _logger.LogInformation("Result is successfully recieved.");
+                _logger.LogInformation("Timing is successfully recieved.");
                 return result;
             }
             else
             {
-                _logger.LogInformation("We can't connect to API.");
+                _logger.LogCritical("We can't connect to API.");
                 return null;
             }
         }
