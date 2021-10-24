@@ -11,9 +11,9 @@ namespace PrayerTime
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = "Share my location", RequestLocation = true}},
-                    new List<KeyboardButton>{ new KeyboardButton {Text = "Cancel"}}
-                }
+                    new List<KeyboardButton>{ new KeyboardButton { Text = "Lokatsiyani jo'natish", RequestLocation = true}}
+                },
+                ResizeKeyboard = true
             };
         }
         public static IReplyMarkup MenuButtons()
@@ -22,8 +22,8 @@ namespace PrayerTime
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = "Today"}, new KeyboardButton {Text = "Tomorrow"}},
-                    new List<KeyboardButton>{ new KeyboardButton {Text = "Next prayer time"}, new KeyboardButton {Text = "Settings"}}
+                    new List<KeyboardButton>{ new KeyboardButton { Text = "Bugungi namoz vaqtlari"}, new KeyboardButton {Text = "Ertangi namoz vaqtlari"}},
+                    new List<KeyboardButton>{ new KeyboardButton {Text = "Keyingi namoz vaqti"}, new KeyboardButton {Text = "Sozlamalar"}}
                 },
                 ResizeKeyboard = true
             };
@@ -34,8 +34,8 @@ namespace PrayerTime
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = "Reset location", RequestLocation = true }, new KeyboardButton {Text = "Turn on notifications"}},
-                    new List<KeyboardButton>{ new KeyboardButton {Text = "Change language"}, new KeyboardButton {Text = "Back to menu"}}
+                    new List<KeyboardButton>{ new KeyboardButton { Text = "Lokatsiyani yangilash", RequestLocation = true }, new KeyboardButton {Text = "Bildirishnomalarni yoqish"}},
+                    new List<KeyboardButton>{ new KeyboardButton {Text = "Menyuga qaytish"}}
                 },
                 ResizeKeyboard = true
             };
