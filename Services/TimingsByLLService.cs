@@ -9,11 +9,12 @@ namespace PrayerTime.Services
 {
     public class TimingsByLLService
     {
-        private readonly HttpClientService _httpService = new HttpClientService();
+        private readonly HttpClientService _httpService;
         private readonly ILogger<TimingsByLLService> _logger;
-        public TimingsByLLService(ILogger<TimingsByLLService> logger)
+        public TimingsByLLService(ILogger<TimingsByLLService> logger, HttpClientService httpService)
         {
             _logger = logger;
+            _httpService = httpService;
         }
         private async Task<HttpResult<TimingsByLL>> _getResult(string time, float longitude, float latitude)
         {

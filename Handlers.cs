@@ -162,9 +162,14 @@ namespace PrayerTime
                                     replyMarkup: Buttons.MenuButtons()),
                     _           => await client.SendTextMessageAsync(
                                     message.Chat.Id,
-                                    "Hozircha shu.",
+                                    $"Hozircha shu.\n{message.Date.ToLocalTime()} m and {DateTime.UtcNow} utc and {DateTime.Now} now",
                                     ParseMode.Markdown)
                 };
+            }
+            if(message.Text == "Bildirishnomalarni yoqish")
+            {
+                var _user = await _storage.GetUserAsync(message.Chat.Id);
+                notification(client, _user);
             }
         }
         private async Task<string> nextPrayerTime(BotUser user)
@@ -212,7 +217,7 @@ namespace PrayerTime
                 if(DateTime.Compare(DateTime.Parse(b.Fajr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Fajr) - now;
-                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Notification.",
@@ -221,7 +226,7 @@ namespace PrayerTime
                 else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Fajr) - now;
-                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Notification.",
@@ -230,7 +235,7 @@ namespace PrayerTime
                 else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Fajr) - now;
-                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Notification.",
@@ -239,7 +244,7 @@ namespace PrayerTime
                 else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Fajr) - now;
-                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Notification.",
@@ -248,7 +253,7 @@ namespace PrayerTime
                 else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Fajr) - now;
-                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Notification.",
@@ -257,11 +262,11 @@ namespace PrayerTime
                 else
                 {
                     b = await _timings.getTimings(user.Longitude, user.Latitude, 0);
-                    var temp = DateTime.Parse(b.Fajr) - now;
-                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    var temp = DateTime.Parse(b.Fajr).AddDays(1) - now;
+                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Notification.",
+                        $"Notification.{temp}",
                         ParseMode.Markdown);
                 }
                 Thread.Sleep(1000000);

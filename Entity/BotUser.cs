@@ -1,6 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 using System;
-using System.Threading.Tasks;
 
 namespace PrayerTime.Entity
 {
