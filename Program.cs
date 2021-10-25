@@ -21,6 +21,7 @@ namespace PrayerTime
             services.AddHostedService<Bot>();
             services.AddTransient<IStorageService, InternalStorageService>();
             services.AddTransient<TimingsByLLService>();
+            services.AddTransient<CurrentTimeService>();
             services.AddTransient<Handlers>();
         }
     }

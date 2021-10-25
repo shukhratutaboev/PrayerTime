@@ -24,7 +24,7 @@ namespace PrayerTime.Entity
             Fullname = fullname;
             Longitude = longitude;
             Latitude = latitude;
-            Notifications = true;
+            Notifications = false;
         }
         public string setNotification()
         {

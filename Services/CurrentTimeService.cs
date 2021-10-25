@@ -15,7 +15,7 @@ namespace PrayerTime.Services
         {
             _logger = logger;
         }
-        public async Task<string> getCurrentTime(string timezone)
+        public async Task<DateTime> getCurrentTime(string timezone)
         {
             var currentTimeApi = $"https://api.aladhan.com/v1/currentTime?zone={timezone}";
             var result = await _httpService.GetObjectAsync<CurrentTime>(currentTimeApi);
@@ -26,12 +26,12 @@ namespace PrayerTime.Services
                     WriteIndented = true
                 };
                 _logger.LogInformation("Current time is successfully recieved.");
-                return result.Data.Data;
+                return DateTime.Parse(result.Data.Data);
             }
             else
             {
                 _logger.LogCritical("We can't connect to API.");
-                return null;
+                return DateTime.Now;
             }
         }
     }

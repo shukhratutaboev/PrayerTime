@@ -16,11 +16,13 @@ namespace PrayerTime
         private readonly ILogger<Handlers> _logger;
         private readonly IStorageService _storage;
         private readonly TimingsByLLService _timings;
-        public Handlers(ILogger<Handlers> logger, IStorageService storage, TimingsByLLService timings)
+        private readonly CurrentTimeService _currentTime;
+        public Handlers(ILogger<Handlers> logger, IStorageService storage, TimingsByLLService timings, CurrentTimeService currentTime)
         {
             _logger = logger;
             _storage = storage;
             _timings = timings;
+            _currentTime = currentTime;
         }
 
         public Task HandleErrorAsync(ITelegramBotClient client, Exception exception, CancellationToken ctoken)
@@ -153,11 +155,116 @@ namespace PrayerTime
                                     $"Bildirishnomalar o'chirildi{_user.setNotification()}",
                                     ParseMode.Markdown,
                                     replyMarkup: Buttons.SettingsButtons(_user.Notifications)),
+                    "Keyingi namoz vaqti" => await client.SendTextMessageAsync(
+                                    message.Chat.Id,
+                                    $"{await nextPrayerTime(_user)}",
+                                    ParseMode.Markdown,
+                                    replyMarkup: Buttons.MenuButtons()),
                     _           => await client.SendTextMessageAsync(
                                     message.Chat.Id,
                                     "Hozircha shu.",
                                     ParseMode.Markdown)
                 };
+            }
+        }
+        private async Task<string> nextPrayerTime(BotUser user)
+        {
+
+            var b = await _timings.getTimings(user.Longitude, user.Latitude);
+            var e = await _timings.getTimings(user.Longitude, user.Latitude, 0);
+            var now = await _currentTime.getCurrentTime(await _timings.getTimeZone(user.Longitude, user.Latitude));
+            string result;
+            if(DateTime.Compare(DateTime.Parse(b.Fajr), now) > 0)
+            {
+                result = $"Keyingi namoz vaqti Bomdod: {b.Fajr}";
+            }
+            else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
+            {
+                result = $"Keyingi namoz vaqti Peshin: {b.Dhuhr}";
+            }
+            else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
+            {
+                result = $"Keyingi namoz vaqti Asr: {b.Asr}";
+            }
+            else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
+            {
+                result = $"Keyingi namoz vaqti Shom: {b.Maghrib}";
+            }
+            else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
+            {
+                result = $"Keyingi namoz vaqti Xufton: {b.Isha}";
+            }
+            else
+            {
+                result = $"Keyingi namoz vaqti Bomdod: {e.Fajr}";
+            }
+            return result;
+
+        }
+        private async void notification(ITelegramBotClient client , BotUser user)
+        {
+            var b = await _timings.getTimings(user.Longitude, user.Latitude);
+            while(user.Notifications)
+            {
+                
+                var e = await _timings.getTimings(user.Longitude, user.Latitude, 0);
+                var now = await _currentTime.getCurrentTime(await _timings.getTimeZone(user.Longitude, user.Latitude));
+                if(DateTime.Compare(DateTime.Parse(b.Fajr), now) > 0)
+                {
+                    var temp = DateTime.Parse(b.Fajr) - now;
+                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    await client.SendTextMessageAsync(
+                        user.ChatID,
+                        "Notification.",
+                        ParseMode.Markdown);
+                }
+                else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
+                {
+                    var temp = DateTime.Parse(b.Fajr) - now;
+                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    await client.SendTextMessageAsync(
+                        user.ChatID,
+                        "Notification.",
+                        ParseMode.Markdown);
+                }
+                else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
+                {
+                    var temp = DateTime.Parse(b.Fajr) - now;
+                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    await client.SendTextMessageAsync(
+                        user.ChatID,
+                        "Notification.",
+                        ParseMode.Markdown);
+                }
+                else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
+                {
+                    var temp = DateTime.Parse(b.Fajr) - now;
+                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    await client.SendTextMessageAsync(
+                        user.ChatID,
+                        "Notification.",
+                        ParseMode.Markdown);
+                }
+                else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
+                {
+                    var temp = DateTime.Parse(b.Fajr) - now;
+                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    await client.SendTextMessageAsync(
+                        user.ChatID,
+                        "Notification.",
+                        ParseMode.Markdown);
+                }
+                else
+                {
+                    b = await _timings.getTimings(user.Longitude, user.Latitude, 0);
+                    var temp = DateTime.Parse(b.Fajr) - now;
+                    Thread.Sleep(Convert.ToInt32(temp.TotalSeconds) * 1000);
+                    await client.SendTextMessageAsync(
+                        user.ChatID,
+                        "Notification.",
+                        ParseMode.Markdown);
+                }
+                Thread.Sleep(1000000);
             }
         }
     }

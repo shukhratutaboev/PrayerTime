@@ -72,5 +72,23 @@ namespace PrayerTime.Services
                 return "We can't connect to API.";
             }
         }
+        public async Task<string> getTimeZone(float longitude, float latitude)
+        {
+            var result = await _getResult("now", longitude, latitude);
+            return result.Data.Data.Meta.Timezone.Replace("\\", "");
+        }
+        public async Task<Timings> getTimings(float longitude, float latitude, int bugunmi = 1)
+        {
+            HttpResult<TimingsByLL> result;
+            if(bugunmi == 1)
+            {
+                result = await _getResult("now", longitude, latitude);
+            }
+            else
+            {
+                result = await _getResult(DateTime.Now.AddDays(1).ToShortDateString().Replace("/", "-"), longitude, latitude);
+            }
+            return result.Data.Data.Timings;
+        }
     }
 }
