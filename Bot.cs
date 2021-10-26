@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
 
-namespace PrayerTime
+namespace PrayerTimeBot
 {
     public class Bot : BackgroundService
     {

@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace PrayerTime.Entity
+namespace PrayerTimeBot.Entity
 {
     public class BotUser
     {

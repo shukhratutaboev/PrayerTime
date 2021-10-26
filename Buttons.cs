@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
 
-namespace PrayerTime
+namespace PrayerTimeBot
 {
     public class Buttons
     {

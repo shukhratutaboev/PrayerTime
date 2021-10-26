@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace PrayerTime.DTO.TimingsByLL
+namespace PrayerTimeBot.DTO.TimingsByLL
 {
     public class Hijri
     {

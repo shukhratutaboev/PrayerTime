@@ -1,4 +1,4 @@
-namespace PrayerTime.Model
+namespace PrayerTimeBot.Model
 {
     public class HttpResult<T>
     {

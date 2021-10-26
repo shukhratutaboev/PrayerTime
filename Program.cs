@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PrayerTime.Services;
+using PrayerTimeBot.Services;
 using Telegram.Bot;
 
-namespace PrayerTime
+namespace PrayerTimeBot
 {
     class Program
     {

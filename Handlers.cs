@@ -2,14 +2,14 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using PrayerTime.Services;
+using PrayerTimeBot.Services;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
-using PrayerTime.Entity;
+using PrayerTimeBot.Entity;
 
-namespace PrayerTime
+namespace PrayerTimeBot
 {
     public class Handlers
     {

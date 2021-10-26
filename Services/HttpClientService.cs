@@ -2,9 +2,9 @@ using System;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using PrayerTime.Model;
+using PrayerTimeBot.Model;
 
-namespace PrayerTime.Services
+namespace PrayerTimeBot.Services
 {
     public class HttpClientService
     {

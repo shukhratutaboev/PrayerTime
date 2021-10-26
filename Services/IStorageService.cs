@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using PrayerTime.Entity;
+using PrayerTimeBot.Entity;
 
-namespace PrayerTime.Services
+namespace PrayerTimeBot.Services
 {
     public interface IStorageService
     {

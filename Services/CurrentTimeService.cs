@@ -2,10 +2,10 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using PrayerTime.DTO.CurrentTime;
-using PrayerTime.Model;
+using PrayerTimeBot.DTO.CurrentTime;
+using PrayerTimeBot.Model;
 
-namespace PrayerTime.Services
+namespace PrayerTimeBot.Services
 {
     public class CurrentTimeService
     {

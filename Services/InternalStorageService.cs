@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
-using PrayerTime.Entity;
+using PrayerTimeBot.Entity;
 using Microsoft.Extensions.Logging;
 using System.Linq;
 
-namespace PrayerTime.Services
+namespace PrayerTimeBot.Services
 {
     public class InternalStorageService : IStorageService
     {

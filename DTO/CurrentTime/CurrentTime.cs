@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace PrayerTime.DTO.CurrentTime
+namespace PrayerTimeBot.DTO.CurrentTime
 {
     public class CurrentTime
     {
