@@ -12,6 +12,8 @@ namespace PrayerTimeBot.Entity
         public float Longitude {get; set;}
         public float Latitude {get; set;}
         public bool Notifications {get; set;}
+        public string Timezone { get; set; }
+        public bool OnWhile { get; set; }
         
         [Obsolete("Used only for Entity binding!")]
         public BotUser() {}
@@ -24,6 +26,8 @@ namespace PrayerTimeBot.Entity
             Longitude = longitude;
             Latitude = latitude;
             Notifications = false;
+            Timezone = null;
+            OnWhile = false;
         }
         public string setNotification()
         {

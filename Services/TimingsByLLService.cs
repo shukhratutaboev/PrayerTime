@@ -2,6 +2,7 @@ using System;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using PrayerTime.Services;
 using PrayerTimeBot.DTO.TimingsByLL;
 using PrayerTimeBot.Model;
 
@@ -11,10 +12,12 @@ namespace PrayerTimeBot.Services
     {
         private readonly HttpClientService _httpService;
         private readonly ILogger<TimingsByLLService> _logger;
-        public TimingsByLLService(ILogger<TimingsByLLService> logger, HttpClientService httpService)
+        // private readonly ICacheService _memCache;
+        public TimingsByLLService(ILogger<TimingsByLLService> logger, HttpClientService httpService/*,ICacheService memCache*/)
         {
             _logger = logger;
             _httpService = httpService;
+            // _memCache = memCache;
         }
         private async Task<HttpResult<TimingsByLL>> _getResult(string time, float longitude, float latitude)
         {
@@ -35,61 +38,18 @@ namespace PrayerTimeBot.Services
                 return null;
             }
         }
-        public async Task<string> getTodayTimings(float longitude, float latitude)
-        {
-            var result = await _getResult("now", longitude, latitude);
-            if(result.IsSuccess && result != null)
-            {
-                return ($"Bugungi namoz vaqtlari: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
-                        $"Bomdod: {result.Data.Data.Timings.Fajr}\n",
-                        $"Quyosh chiqishi: {result.Data.Data.Timings.Sunrise}\n",
-                        $"Peshin: {result.Data.Data.Timings.Dhuhr}\n",
-                        $"Asr: {result.Data.Data.Timings.Asr}\n",
-                        $"Shom: {result.Data.Data.Timings.Maghrib}\n",
-                        $"Xufton: {result.Data.Data.Timings.Isha}\n"
-                        ).ToString().Replace(",", "").Replace("(", "").Replace(")", "");
-            }
-            else
-            {
-                return "We can't connect to API.";
-            }
-        }
-        public async Task<string> getTomorrowTimings(float longitude, float latitude)
-        {
-            var result = await _getResult(DateTime.Now.AddDays(1).ToShortDateString().Replace("/", "-"), longitude, latitude);
-            if(result.IsSuccess && result != null)
-            {
-                return ($"Ertangi namoz vaqtlari: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
-                        $"Bomdod: {result.Data.Data.Timings.Fajr}\n",
-                        $"Quyosh chiqishi: {result.Data.Data.Timings.Sunrise}\n",
-                        $"Peshin: {result.Data.Data.Timings.Dhuhr}\n",
-                        $"Asr: {result.Data.Data.Timings.Asr}\n",
-                        $"Shom: {result.Data.Data.Timings.Maghrib}\n",
-                        $"Xufton: {result.Data.Data.Timings.Isha}\n"
-                        ).ToString().Replace(",", "").Replace("(", "").Replace(")", "");
-            }
-            else
-            {
-                return "We can't connect to API.";
-            }
-        }
-        public async Task<string> getTimeZone(float longitude, float latitude)
-        {
-            var result = await _getResult("now", longitude, latitude);
-            return result.Data.Data.Meta.Timezone.Replace("\\", "");
-        }
-        public async Task<Timings> getTimings(float longitude, float latitude, int bugunmi = 1)
+        public async Task<HttpResult<TimingsByLL>> getTimings(float longitude, float latitude, int bugunmi = 1)
         {
             HttpResult<TimingsByLL> result;
             if(bugunmi == 1)
             {
-                result = await _getResult("now", longitude, latitude);
+                result = await _getResult(DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString() , longitude, latitude);
             }
             else
             {
-                result = await _getResult(DateTime.Now.AddDays(1).ToShortDateString().Replace("/", "-"), longitude, latitude);
+                result = await _getResult(DateTimeOffset.UtcNow.AddDays(1).ToUnixTimeSeconds().ToString(), longitude, latitude);
             }
-            return result.Data.Data.Timings;
+            return result;
         }
     }
 }
