@@ -206,9 +206,9 @@ namespace PrayerTimeBot
             return result;
 
         }
-        private async void notification(ITelegramBotClient client , BotUser user)
+        private async Task notification(ITelegramBotClient client , BotUser user)
         {
-            Console.WriteLine(await _timings.getWeekday(user.Longitude, user.Latitude));
+            // Console.WriteLine(await _timings.getWeekday(user.Longitude, user.Latitude));
             
             var b = (await _timings.GetOrUpdateTimingAsync(user.Longitude, user.Latitude, DateTime.UtcNow.Day)).Data.Data.Timings;
             while(user.Notifications && !user.OnWhile)
@@ -221,24 +221,26 @@ namespace PrayerTimeBot
                 if(DateTime.Compare(DateTime.Parse(b.Fajr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Fajr) - now;
-                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Bomdod",
+                        "Bomdod vaqti kirdi",
                         ParseMode.Markdown);
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Sunrise), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Sunrise) - now;
-                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "quyosh",
+                        "Quyosh chiqdi",
                         ParseMode.Markdown);
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
                 {
-                    Thread.Sleep(3600000);
+                    // Thread.Sleep(3600000);
+                    await Task.Delay(3600000);
                     if(await _timings.getWeekday(user.Longitude, user.Latitude) == "Friday")
                     {
                         await client.SendTextMessageAsync(
@@ -247,7 +249,8 @@ namespace PrayerTimeBot
                             ParseMode.Markdown);
                     }
                     var temp = DateTime.Parse(b.Dhuhr) - now;
-                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Peshin.",
@@ -256,7 +259,8 @@ namespace PrayerTimeBot
                 else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Asr) - now;
-                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Asr.",
@@ -265,7 +269,8 @@ namespace PrayerTimeBot
                 else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Maghrib) - now;
-                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         "Shom",
@@ -274,23 +279,26 @@ namespace PrayerTimeBot
                 else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Isha) - now;
-                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    // Thread.Sleep(1000/*Math.Abs((int)temp.TotalSeconds * 1000)*/);
+                    await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Xufton.",
+                        $"Xufton vaqti kirdi: {b.Isha}",
                         ParseMode.Markdown);
                 }
                 else
                 {
                     b = (await _timings.GetOrUpdateTimingAsync(user.Longitude, user.Latitude, DateTime.UtcNow.AddDays(1).Day, 0)).Data.Data.Timings;
                     var temp = DateTime.Parse(b.Fajr).AddDays(1) - now;
-                    Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
+                    await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         $"Bomdod.{temp}",
                         ParseMode.Markdown);
                 }
-                Thread.Sleep(1000000);
+                // Thread.Sleep(1000/*1000000*/);
+                await Task.Delay(1000000);
                 user.OnWhile = false;
                 await _storage.UpdateUserAsync(user);
             }
