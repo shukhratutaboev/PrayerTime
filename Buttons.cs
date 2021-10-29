@@ -1,50 +1,62 @@
 using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
+using PrayerTime.Services;
 
 namespace PrayerTimeBot
 {
     public class Buttons
     {
-        public static IReplyMarkup GetLocationButton()
+        public static IReplyMarkup LanguageButton()
+        {
+            return new InlineKeyboardMarkup(
+                new InlineKeyboardButton[]
+                {
+                    InlineKeyboardButton.WithCallbackData(text: "O'zbek tili", "uz"),
+                    InlineKeyboardButton.WithCallbackData(text: "Русский язык", "ru"),
+                    InlineKeyboardButton.WithCallbackData(text: "English", "en")
+                }
+            );
+        }
+        public static IReplyMarkup GetLocationButton(string lan)
         {
             return new ReplyKeyboardMarkup
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = "Lokatsiyani jo'natish", RequestLocation = true}}
+                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.shareLocation(lan), RequestLocation = true}}
                 },
                 ResizeKeyboard = true
             };
         }
-        public static IReplyMarkup MenuButtons()
+        public static IReplyMarkup MenuButtons(string lan)
         {
             return new ReplyKeyboardMarkup
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = "Bugungi namoz vaqtlari"}, new KeyboardButton {Text = "Ertangi namoz vaqtlari"}},
-                    new List<KeyboardButton>{ new KeyboardButton {Text = "Keyingi namoz vaqti"}, new KeyboardButton {Text = "Sozlamalar"}}
+                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.today(lan)}, new KeyboardButton {Text = Language.tomorrow(lan)}},
+                    new List<KeyboardButton>{ new KeyboardButton {Text = Language.nextpt(lan)}, new KeyboardButton {Text = Language.settings(lan)}}
                 },
                 ResizeKeyboard = true
             };
         }
-        public static IReplyMarkup SettingsButtons(bool notifications)
+        public static IReplyMarkup SettingsButtons(bool notifications, string lan)
         {
             string notificationsButton;
             if(notifications)
             {
-                notificationsButton = "Bildirishnomalarni o'chirish";
+                notificationsButton = Language.turnOfNotf(lan);
             }
             else
             {
-                notificationsButton = "Bildirishnomalarni yoqish";
+                notificationsButton = Language.turnOnNotf(lan);
             }
             return new ReplyKeyboardMarkup
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = "Lokatsiyani yangilash", RequestLocation = true }, new KeyboardButton {Text = notificationsButton}},
-                    new List<KeyboardButton>{ new KeyboardButton {Text = "Menyuga qaytish"}}
+                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.setLocation(lan), RequestLocation = true }, new KeyboardButton {Text = notificationsButton}},
+                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.changeLanguage(lan)}, new KeyboardButton {Text = Language.backToMenu(lan)}}
                 },
                 ResizeKeyboard = true
             };

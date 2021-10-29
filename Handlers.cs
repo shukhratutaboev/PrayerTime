@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,7 +73,41 @@ namespace PrayerTimeBot
 
         private async Task BotOnCallbackQueryReceived(ITelegramBotClient client, CallbackQuery callbackQuery)
         {
-            throw new NotImplementedException();
+            var user = await _storage.GetUserAsync(callbackQuery.Message.Chat.Id);
+            if(user.Latitude == 0)
+            {
+                if(callbackQuery.Data == "uz") user.Language = "uz";
+
+                if(callbackQuery.Data == "ru") user.Language = "ru";
+
+                if(callbackQuery.Data == "en") user.Language = "en";
+                await client.SendTextMessageAsync(
+                    callbackQuery.Message.Chat.Id,
+                    Language.welcome(user.Language),
+                    ParseMode.Markdown,
+                    replyMarkup: Buttons.GetLocationButton(user.Language));
+            }
+            else
+            {
+                if(callbackQuery.Data == "uz") user.Language = "uz";
+
+                if(callbackQuery.Data == "ru") user.Language = "ru";
+
+                if(callbackQuery.Data == "en") user.Language = "en";
+                await client.SendTextMessageAsync(
+                    callbackQuery.Message.Chat.Id,
+                    Language.choosenLan(user.Language),
+                    ParseMode.Markdown,
+                    replyMarkup: Buttons.MenuButtons(user.Language));
+            }
+
+            
+            await _storage.UpdateUserAsync(user);
+            await  client.DeleteMessageAsync(
+                callbackQuery.Message.Chat.Id,
+                callbackQuery.Message.MessageId
+            );
+
         }
 
         private async Task BotOnMessageEdited(ITelegramBotClient client, Message editedMessage)
@@ -84,32 +119,37 @@ namespace PrayerTimeBot
         {
             if(message.Text == "/start")
             {
-                var user = new BotUser(
+                var newuser = new BotUser(
                     chatId: message.Chat.Id,
                     username: message.From.Username,
                     fullname: $"{message.From.FirstName} {message.From.LastName}",
                     longitude: 0,
                     latitude: 0
                 );
-                var result = await _storage.InsertUserAsync(user);
+                var result = await _storage.InsertUserAsync(newuser);
                 if(result.IsSuccess)
                 {
-                    _logger.LogInformation($"New user added: {user.ChatID} {user.Username}");
+                    _logger.LogInformation($"New user added: {newuser.ChatID} {newuser.Username}");
                 }
                 else
                 {
                     _logger.LogInformation("User already exists");
                 }
+                await client.SendTextMessageAsync(
+                    message.Chat.Id,
+                    "Iltimos tilni tanlang.",
+                    ParseMode.Markdown,
+                    replyMarkup: Buttons.LanguageButton());
             }
+            var user = await _storage.GetUserAsync(message.Chat.Id);
             if(message.Location != null)
             {
                 await client.SendTextMessageAsync(
                     message.Chat.Id,
-                    "Lokatsiyangiz muvaffaqiyatli qabul qilindi",
+                    $"{Language.locationRecieved(user.Language)}",
                     replyToMessageId: message.MessageId,
-                    replyMarkup: Buttons.MenuButtons()
+                    replyMarkup: Buttons.MenuButtons(user.Language)
                 );
-                var user = await _storage.GetUserAsync(message.Chat.Id);
                 user.Longitude = message.Location.Longitude;
                 user.Latitude = message.Location.Latitude;
                 user.Timezone = await _timings.getTimeZone(user.Longitude, user.Latitude);
@@ -117,56 +157,73 @@ namespace PrayerTimeBot
             }
             else
             {
-                var _user = await _storage.GetUserAsync(message.Chat.Id);
-                var a = message.Text switch
+                var text = message.Text;
+                if(text == Language.settings(user.Language))
                 {
-                    "/start"    => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    "Botga xush kelibsiz.\nLokatsiyangizni jo'natmasangiz bot ishlamaydi.",
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.GetLocationButton()),
-                    "Sozlamalar"  => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    "Sozlamalardan birini tanlang",
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.SettingsButtons(_user.Notifications)),
-                    "Bugungi namoz vaqtlari"     => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    await _timings.getTodayTimings(_user.Longitude ,_user.Latitude),
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.MenuButtons()),
-                    "Ertangi namoz vaqtlari"  => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    await _timings.getTomorrowTimings(_user.Longitude, _user.Latitude, _user.Timezone ),
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.MenuButtons()),
-                    "Menyuga qaytish" => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    "Back to menu",
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.MenuButtons()),
-                    "Bildirishnomalarni yoqish" => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    $"Bildirishnomalar yoqildi{_user.setNotification()}",
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.SettingsButtons(_user.Notifications)),
-                    "Bildirishnomalarni o'chirish" => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    $"Bildirishnomalar o'chirildi{_user.setNotification()}",
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.SettingsButtons(_user.Notifications)),
-                    "Keyingi namoz vaqti" => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    $"{await nextPrayerTime(_user)}",
-                                    ParseMode.Markdown,
-                                    replyMarkup: Buttons.MenuButtons()),
-                    _           => await client.SendTextMessageAsync(
-                                    message.Chat.Id,
-                                    $"Hozircha shu.\n{message.Date.ToLocalTime()} m and {DateTime.UtcNow} utc and {DateTime.Now} now",
-                                    ParseMode.Markdown)
-                };
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        Language.settingReply(user.Language),
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.SettingsButtons(user.Notifications, user.Language));
+                }
+                else if(text == Language.today(user.Language))
+                {
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        await _timings.getTodayTimings(user.Longitude ,user.Latitude, user.Language),
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.MenuButtons(user.Language));
+                }
+                else if(text == Language.tomorrow(user.Language))
+                {
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        await _timings.getTomorrowTimings(user.Longitude, user.Latitude, user.Language ),
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.MenuButtons(user.Language));
+                }
+                else if(text == Language.backToMenu(user.Language))
+                {
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        Language.menu(user.Language),
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.MenuButtons(user.Language));
+                }
+                else if(text == Language.turnOnNotf(user.Language))
+                {
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        $"{Language.turnedOnReply(user.Language)}{user.setNotification()}",
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.SettingsButtons(user.Notifications, user.Language));
+                }
+                else if(text == Language.turnOfNotf(user.Language))
+                {
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        $"{Language.turnedOfReply(user.Language)}{user.setNotification()}",
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.SettingsButtons(user.Notifications, user.Language));
+                }
+                else if(text == Language.nextpt(user.Language))
+                {
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        $"{await nextPrayerTime(user)}",
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.MenuButtons(user.Language));
+                }
+                else if(text == Language.changeLanguage(user.Language))
+                {
+                    await client.SendTextMessageAsync(
+                        message.Chat.Id,
+                        Language.chooseLan(user.Language),
+                        ParseMode.Markdown,
+                        replyMarkup: Buttons.LanguageButton());
+                }
             }
-            if(message.Text == "Bildirishnomalarni yoqish")
+            if(message.Text == Language.turnOnNotf(user.Language))
             {
                 var _user = await _storage.GetUserAsync(message.Chat.Id);
                 notification(client, _user);
@@ -179,37 +236,37 @@ namespace PrayerTimeBot
             var e = (await _timings.GetOrUpdateTimingAsync(user.Longitude, user.Latitude, DateTime.UtcNow.AddDays(1).Day, 0)).Data.Data.Timings;
             var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(user.Timezone));
             string result;
+            string isen = "";
+            if(user.Language == "en") isen = "is ";
             if(DateTime.Compare(DateTime.Parse(b.Fajr), now) > 0)
             {
-                result = $"Keyingi namoz vaqti Bomdod: {b.Fajr} {now}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.fajr(user.Language)}: {b.Fajr} {now}";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
             {
-                result = $"Keyingi namoz vaqti Peshin: {b.Dhuhr}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.dhuhr(user.Language)}: {b.Dhuhr}";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
             {
-                result = $"Keyingi namoz vaqti Asr: {b.Asr}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.asr(user.Language)}: {b.Asr}";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
             {
-                result = $"Keyingi namoz vaqti Shom: {b.Maghrib}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.maghrib(user.Language)}: {b.Maghrib}";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
             {
-                result = $"Keyingi namoz vaqti Xufton: {b.Isha}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.isha(user.Language)}: {b.Isha}";
             }
             else
             {
-                result = $"Keyingi namoz vaqti Bomdod: {e.Fajr}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.fajr(user.Language)}: {e.Fajr}";
             }
             return result;
 
         }
         private async Task notification(ITelegramBotClient client , BotUser user)
-        {
-            // Console.WriteLine(await _timings.getWeekday(user.Longitude, user.Latitude));
-            
+        {   
             var b = (await _timings.GetOrUpdateTimingAsync(user.Longitude, user.Latitude, DateTime.UtcNow.Day)).Data.Data.Timings;
             while(user.Notifications && !user.OnWhile)
             {
@@ -230,7 +287,6 @@ namespace PrayerTimeBot
                 else if(DateTime.Compare(DateTime.Parse(b.Sunrise), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Sunrise) - now;
-                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
@@ -239,17 +295,15 @@ namespace PrayerTimeBot
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
                 {
-                    // Thread.Sleep(3600000);
                     await Task.Delay(3600000);
                     if(await _timings.getWeekday(user.Longitude, user.Latitude) == "Friday")
                     {
                         await client.SendTextMessageAsync(
                             user.ChatID,
-                            "Juma",
+                            Language.juma(user.Language),
                             ParseMode.Markdown);
                     }
                     var temp = DateTime.Parse(b.Dhuhr) - now;
-                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
@@ -259,7 +313,6 @@ namespace PrayerTimeBot
                 else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Asr) - now;
-                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
@@ -269,7 +322,6 @@ namespace PrayerTimeBot
                 else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Maghrib) - now;
-                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
@@ -279,7 +331,6 @@ namespace PrayerTimeBot
                 else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Isha) - now;
-                    // Thread.Sleep(1000/*Math.Abs((int)temp.TotalSeconds * 1000)*/);
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
@@ -290,14 +341,12 @@ namespace PrayerTimeBot
                 {
                     b = (await _timings.GetOrUpdateTimingAsync(user.Longitude, user.Latitude, DateTime.UtcNow.AddDays(1).Day, 0)).Data.Data.Timings;
                     var temp = DateTime.Parse(b.Fajr).AddDays(1) - now;
-                    // Thread.Sleep(Math.Abs((int)temp.TotalSeconds * 1000));
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
                     await client.SendTextMessageAsync(
                         user.ChatID,
                         $"Bomdod.{temp}",
                         ParseMode.Markdown);
                 }
-                // Thread.Sleep(1000/*1000000*/);
                 await Task.Delay(1000000);
                 user.OnWhile = false;
                 await _storage.UpdateUserAsync(user);

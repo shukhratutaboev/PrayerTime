@@ -14,6 +14,7 @@ namespace PrayerTimeBot.Entity
         public bool Notifications {get; set;}
         public string Timezone { get; set; }
         public bool OnWhile { get; set; }
+        public string Language {get; set;}
         
         [Obsolete("Used only for Entity binding!")]
         public BotUser() {}
@@ -28,6 +29,7 @@ namespace PrayerTimeBot.Entity
             Notifications = false;
             Timezone = null;
             OnWhile = false;
+            Language = null;
         }
         public string setNotification()
         {
@@ -41,6 +43,16 @@ namespace PrayerTimeBot.Entity
             }
             return null;
         }
-        
+        public void setLanguage(string l)
+        {
+            if(l == "uz")
+            Language = "uz";
+
+            if(l == "ru")
+            Language = "ru";
+
+            if(l == "en")
+            Language = "en";
+        }
     }
 }

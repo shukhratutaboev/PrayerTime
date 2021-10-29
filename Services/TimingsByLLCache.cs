@@ -30,18 +30,18 @@ namespace PrayerTime.Services
                 return result;
             });
         }
-        public async Task<string> getTodayTimings(float longitude, float latitude)
+        public async Task<string> getTodayTimings(float longitude, float latitude, string lan)
         {
             var result = await GetOrUpdateTimingAsync(longitude, latitude, DateTime.UtcNow.Day);
             if(result.IsSuccess && result != null)
             {
-                return ($"Bugungi namoz vaqtlari: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
-                        $"Bomdod: {result.Data.Data.Timings.Fajr}\n",
-                        $"Quyosh chiqishi: {result.Data.Data.Timings.Sunrise}\n",
-                        $"Peshin: {result.Data.Data.Timings.Dhuhr}\n",
-                        $"Asr: {result.Data.Data.Timings.Asr}\n",
-                        $"Shom: {result.Data.Data.Timings.Maghrib}\n",
-                        $"Xufton: {result.Data.Data.Timings.Isha}\n"
+                return ($"{Language.today(lan)}: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
+                        $"{Language.fajr(lan)}: {result.Data.Data.Timings.Fajr}\n",
+                        $"{Language.sunrise(lan)}: {result.Data.Data.Timings.Sunrise}\n",
+                        $"{Language.dhuhr(lan)}: {result.Data.Data.Timings.Dhuhr}\n",
+                        $"{Language.asr(lan)}: {result.Data.Data.Timings.Asr}\n",
+                        $"{Language.maghrib(lan)}: {result.Data.Data.Timings.Maghrib}\n",
+                        $"{Language.isha(lan)}: {result.Data.Data.Timings.Isha}\n"
                         ).ToString().Replace(",", "").Replace("(", "").Replace(")", "");
             }
             else
@@ -49,18 +49,18 @@ namespace PrayerTime.Services
                 return "We can't connect to API.";
             }
         }
-        public async Task<string> getTomorrowTimings(float longitude, float latitude, string timezone)
+        public async Task<string> getTomorrowTimings(float longitude, float latitude, string lan)
         {
             var result = await GetOrUpdateTimingAsync(longitude, latitude, DateTime.UtcNow.AddDays(1).Day, 0);
             if(result.IsSuccess && result != null)
             {
-                return ($"Ertangi namoz vaqtlari: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
-                        $"Bomdod: {result.Data.Data.Timings.Fajr}\n",
-                        $"Quyosh chiqishi: {result.Data.Data.Timings.Sunrise}\n",
-                        $"Peshin: {result.Data.Data.Timings.Dhuhr}\n",
-                        $"Asr: {result.Data.Data.Timings.Asr}\n",
-                        $"Shom: {result.Data.Data.Timings.Maghrib}\n",
-                        $"Xufton: {result.Data.Data.Timings.Isha}\n"
+                return ($"{Language.tomorrow(lan)}: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
+                        $"{Language.fajr(lan)}: {result.Data.Data.Timings.Fajr}\n",
+                        $"{Language.sunrise(lan)}: {result.Data.Data.Timings.Sunrise}\n",
+                        $"{Language.dhuhr(lan)}: {result.Data.Data.Timings.Dhuhr}\n",
+                        $"{Language.asr(lan)}: {result.Data.Data.Timings.Asr}\n",
+                        $"{Language.maghrib(lan)}: {result.Data.Data.Timings.Maghrib}\n",
+                        $"{Language.isha(lan)}: {result.Data.Data.Timings.Isha}\n"
                         ).ToString().Replace(",", "").Replace("(", "").Replace(")", "");
             }
             else
