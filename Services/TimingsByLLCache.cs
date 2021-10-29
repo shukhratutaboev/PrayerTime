@@ -35,13 +35,14 @@ namespace PrayerTime.Services
             var result = await GetOrUpdateTimingAsync(longitude, latitude, DateTime.UtcNow.Day);
             if(result.IsSuccess && result != null)
             {
-                return ($"{Language.today(lan)}: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
-                        $"{Language.fajr(lan)}: {result.Data.Data.Timings.Fajr}\n",
-                        $"{Language.sunrise(lan)}: {result.Data.Data.Timings.Sunrise}\n",
-                        $"{Language.dhuhr(lan)}: {result.Data.Data.Timings.Dhuhr}\n",
-                        $"{Language.asr(lan)}: {result.Data.Data.Timings.Asr}\n",
-                        $"{Language.maghrib(lan)}: {result.Data.Data.Timings.Maghrib}\n",
-                        $"{Language.isha(lan)}: {result.Data.Data.Timings.Isha}\n"
+                return ($"{Language.today(lan)}: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n\n",
+                        $"{Language.fajr(lan)}: *{result.Data.Data.Timings.Fajr}*\n",
+                        $"{Language.sunrise(lan)}: *{result.Data.Data.Timings.Sunrise}*\n",
+                        $"{Language.dhuhr(lan)}: *{result.Data.Data.Timings.Dhuhr}*\n",
+                        $"{Language.asr(lan)}: *{result.Data.Data.Timings.Asr}*\n",
+                        $"{Language.maghrib(lan)}: *{result.Data.Data.Timings.Maghrib}*\n",
+                        $"{Language.isha(lan)}: *{result.Data.Data.Timings.Isha}*\n\n",
+                        "@muslimprayertimebot"
                         ).ToString().Replace(",", "").Replace("(", "").Replace(")", "");
             }
             else
@@ -54,13 +55,14 @@ namespace PrayerTime.Services
             var result = await GetOrUpdateTimingAsync(longitude, latitude, DateTime.UtcNow.AddDays(1).Day, 0);
             if(result.IsSuccess && result != null)
             {
-                return ($"{Language.tomorrow(lan)}: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n",
-                        $"{Language.fajr(lan)}: {result.Data.Data.Timings.Fajr}\n",
-                        $"{Language.sunrise(lan)}: {result.Data.Data.Timings.Sunrise}\n",
-                        $"{Language.dhuhr(lan)}: {result.Data.Data.Timings.Dhuhr}\n",
-                        $"{Language.asr(lan)}: {result.Data.Data.Timings.Asr}\n",
-                        $"{Language.maghrib(lan)}: {result.Data.Data.Timings.Maghrib}\n",
-                        $"{Language.isha(lan)}: {result.Data.Data.Timings.Isha}\n"
+                return ($"{Language.tomorrow(lan)}: {(result.Data.Data.Date.Gregorian.Date).Replace("-", ".")}\n\n",
+                        $"{Language.fajr(lan)}: *{result.Data.Data.Timings.Fajr}*\n",
+                        $"{Language.sunrise(lan)}: *{result.Data.Data.Timings.Sunrise}*\n",
+                        $"{Language.dhuhr(lan)}: *{result.Data.Data.Timings.Dhuhr}*\n",
+                        $"{Language.asr(lan)}: *{result.Data.Data.Timings.Asr}*\n",
+                        $"{Language.maghrib(lan)}: *{result.Data.Data.Timings.Maghrib}*\n",
+                        $"{Language.isha(lan)}: *{result.Data.Data.Timings.Isha}*\n\n",
+                        "@muslimprayertimebot"
                         ).ToString().Replace(",", "").Replace("(", "").Replace(")", "");
             }
             else

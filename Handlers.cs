@@ -240,30 +240,29 @@ namespace PrayerTimeBot
             if(user.Language == "en") isen = "is ";
             if(DateTime.Compare(DateTime.Parse(b.Fajr), now) > 0)
             {
-                result = $"{Language.nextpt(user.Language)} {isen}{Language.fajr(user.Language)}: {b.Fajr} {now}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.fajr(user.Language)}: *{b.Fajr}* {now}";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
             {
-                result = $"{Language.nextpt(user.Language)} {isen}{Language.dhuhr(user.Language)}: {b.Dhuhr}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.dhuhr(user.Language)}: *{b.Dhuhr}*";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
             {
-                result = $"{Language.nextpt(user.Language)} {isen}{Language.asr(user.Language)}: {b.Asr}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.asr(user.Language)}: *{b.Asr}*";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
             {
-                result = $"{Language.nextpt(user.Language)} {isen}{Language.maghrib(user.Language)}: {b.Maghrib}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.maghrib(user.Language)}: *{b.Maghrib}*";
             }
             else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
             {
-                result = $"{Language.nextpt(user.Language)} {isen}{Language.isha(user.Language)}: {b.Isha}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.isha(user.Language)}: *{b.Isha}*";
             }
             else
             {
-                result = $"{Language.nextpt(user.Language)} {isen}{Language.fajr(user.Language)}: {e.Fajr}";
+                result = $"{Language.nextpt(user.Language)} {isen}{Language.fajr(user.Language)}: *{e.Fajr}*";
             }
             return result;
-
         }
         private async Task notification(ITelegramBotClient client , BotUser user)
         {   
@@ -275,66 +274,85 @@ namespace PrayerTimeBot
                 
                 var e = (await _timings.GetOrUpdateTimingAsync(user.Longitude, user.Latitude, DateTime.UtcNow.AddDays(1).Day, 0)).Data.Data.Timings;
                 var now = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, TimeZoneInfo.FindSystemTimeZoneById(user.Timezone));
+                await Task.Delay(300000);
+                if(await _timings.getWeekday(user.Longitude, user.Latitude) == "Friday")
+                {
+                    // await client.SendTextMessageAsync(
+                    //     user.ChatID,
+                    //     Language.juma(user.Language),
+                    //     ParseMode.Markdown);
+                    await client.SendPhotoAsync(
+                        user.ChatID,
+                        "https://look.com.ua/pic/201706/1400x1050/look.com.ua-218457.jpg",
+                        Language.juma(user.Language));
+                }
                 if(DateTime.Compare(DateTime.Parse(b.Fajr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Fajr) - now;
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
+                    if(user.Notifications)
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Bomdod vaqti kirdi",
+                        $"{Language.fajr_n(user.Language)} {b.Fajr}\n \n{Language.arabic()}\n \n{Language.eslatma(user.Language)}",
                         ParseMode.Markdown);
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Sunrise), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Sunrise) - now;
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
+                    if(user.Notifications)
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Quyosh chiqdi",
+                        $"{Language.sunrise_n(user.Language)}",
                         ParseMode.Markdown);
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Dhuhr), now) > 0)
                 {
-                    await Task.Delay(3600000);
-                    if(await _timings.getWeekday(user.Longitude, user.Latitude) == "Friday")
-                    {
-                        await client.SendTextMessageAsync(
-                            user.ChatID,
-                            Language.juma(user.Language),
-                            ParseMode.Markdown);
-                    }
+                    // await Task.Delay(3600000);
+                    // await Task.Delay(100000);
+                    // if(await _timings.getWeekday(user.Longitude, user.Latitude) == "Friday")
+                    // {
+                    //     await client.SendTextMessageAsync(
+                    //         user.ChatID,
+                    //         Language.juma(user.Language),
+                    //         ParseMode.Markdown);
+                    // }
                     var temp = DateTime.Parse(b.Dhuhr) - now;
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
+                    if(user.Notifications)
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Peshin.",
+                        $"{Language.dhuhr_n(user.Language)} {b.Dhuhr}\n \n{Language.arabic()}\n \n{Language.eslatma(user.Language)}",
                         ParseMode.Markdown);
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Asr), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Asr) - now;
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
+                    if(user.Notifications)
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Asr.",
+                        $"{Language.asr_n(user.Language)} {b.Asr}\n \n{Language.arabic()}\n \n{Language.eslatma(user.Language)}",
                         ParseMode.Markdown);
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Maghrib), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Maghrib) - now;
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
+                    if(user.Notifications)
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        "Shom",
+                        $"{Language.maghrib_n(user.Language)} {b.Maghrib}\n \n{Language.arabic()}\n \n{Language.eslatma(user.Language)}",
                         ParseMode.Markdown);
                 }
                 else if(DateTime.Compare(DateTime.Parse(b.Isha), now) > 0)
                 {
                     var temp = DateTime.Parse(b.Isha) - now;
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
+                    if(user.Notifications)
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        $"Xufton vaqti kirdi: {b.Isha}",
+                        $"{Language.isha_n(user.Language)} {b.Isha}\n \n{Language.arabic()}\n \n{Language.eslatma(user.Language)}",
                         ParseMode.Markdown);
                 }
                 else
@@ -342,9 +360,10 @@ namespace PrayerTimeBot
                     b = (await _timings.GetOrUpdateTimingAsync(user.Longitude, user.Latitude, DateTime.UtcNow.AddDays(1).Day, 0)).Data.Data.Timings;
                     var temp = DateTime.Parse(b.Fajr).AddDays(1) - now;
                     await Task.Delay(Math.Abs((int)temp.TotalSeconds * 1000));
+                    if(user.Notifications)
                     await client.SendTextMessageAsync(
                         user.ChatID,
-                        $"Bomdod.{temp}",
+                        $"{Language.fajr_n(user.Language)} {b.Fajr}\n \n{Language.arabic()}\n \n{Language.eslatma(user.Language)}",
                         ParseMode.Markdown);
                 }
                 await Task.Delay(1000000);

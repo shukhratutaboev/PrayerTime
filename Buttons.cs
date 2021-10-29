@@ -11,9 +11,9 @@ namespace PrayerTimeBot
             return new InlineKeyboardMarkup(
                 new InlineKeyboardButton[]
                 {
-                    InlineKeyboardButton.WithCallbackData(text: "O'zbek tili", "uz"),
-                    InlineKeyboardButton.WithCallbackData(text: "Русский язык", "ru"),
-                    InlineKeyboardButton.WithCallbackData(text: "English", "en")
+                    InlineKeyboardButton.WithCallbackData(text: "O'zbek tili🇺🇿", "uz"),
+                    InlineKeyboardButton.WithCallbackData(text: "Русский🇷🇺", "ru"),
+                    InlineKeyboardButton.WithCallbackData(text: "English🇺🇸", "en")
                 }
             );
         }
