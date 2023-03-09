@@ -112,7 +112,7 @@ namespace PrayerTimeBot
 
         private async Task BotOnMessageEdited(ITelegramBotClient client, Message editedMessage)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("");
         }
 
         private async Task BotOnMessageRecieved(ITelegramBotClient client, Message message)
@@ -150,8 +150,8 @@ namespace PrayerTimeBot
                     replyToMessageId: message.MessageId,
                     replyMarkup: Buttons.MenuButtons(user.Language)
                 );
-                user.Longitude = message.Location.Longitude;
-                user.Latitude = message.Location.Latitude;
+                user.Longitude = (float)message.Location.Longitude;
+                user.Latitude = (float)message.Location.Latitude;
                 user.Timezone = await _timings.getTimeZone(user.Longitude, user.Latitude);
                 await _storage.UpdateUserAsync(user);
             }
