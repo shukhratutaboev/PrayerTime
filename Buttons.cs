@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using Telegram.Bot.Types.ReplyMarkups;
 using PrayerTime.Services;
 
-namespace PrayerTimeBot;
-
+namespace PrayerTimeBot
+{
     public class Buttons
     {
         public static IReplyMarkup LanguageButton()
@@ -23,7 +23,7 @@ namespace PrayerTimeBot;
             {
                 Keyboard = new List<List<KeyboardButton>>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton(Language.shareLocation(lan)) { RequestLocation = true }}
+                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.shareLocation(lan), RequestLocation = true}}
                 },
                 ResizeKeyboard = true
             };
@@ -62,3 +62,4 @@ namespace PrayerTimeBot;
             };
         }
     }
+}
