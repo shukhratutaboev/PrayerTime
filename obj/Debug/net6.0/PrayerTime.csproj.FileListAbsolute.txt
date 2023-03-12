@@ -1,5 +1,0 @@
-/home/hp/Videos/PrayerTime/obj/Debug/net6.0/PrayerTime.csproj.AssemblyReference.cache
-/home/hp/Videos/PrayerTime/obj/Debug/net6.0/PrayerTime.GeneratedMSBuildEditorConfig.editorconfig
-/home/hp/Videos/PrayerTime/obj/Debug/net6.0/PrayerTime.AssemblyInfoInputs.cache
-/home/hp/Videos/PrayerTime/obj/Debug/net6.0/PrayerTime.AssemblyInfo.cs
-/home/hp/Videos/PrayerTime/obj/Debug/net6.0/PrayerTime.csproj.CoreCompileInputs.cache

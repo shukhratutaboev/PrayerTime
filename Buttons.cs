@@ -19,27 +19,29 @@ namespace PrayerTimeBot
         }
         public static IReplyMarkup GetLocationButton(string lan)
         {
-            return new ReplyKeyboardMarkup
+            return new ReplyKeyboardMarkup(new List<List<KeyboardButton>>
             {
-                Keyboard = new List<List<KeyboardButton>>
+                new List<KeyboardButton>
                 {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.shareLocation(lan), RequestLocation = true}}
-                },
+                    new KeyboardButton(Language.shareLocation(lan)) { RequestLocation = true }
+                }
+            })
+            {
                 ResizeKeyboard = true
             };
         }
+        
         public static IReplyMarkup MenuButtons(string lan)
         {
-            return new ReplyKeyboardMarkup
-            {
-                Keyboard = new List<List<KeyboardButton>>
-                {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.today(lan)}, new KeyboardButton {Text = Language.tomorrow(lan)}},
-                    new List<KeyboardButton>{ new KeyboardButton {Text = Language.nextpt(lan)}, new KeyboardButton {Text = Language.settings(lan)}}
-                },
-                ResizeKeyboard = true
-            };
-        }
+        return new ReplyKeyboardMarkup(new List<List<KeyboardButton>>
+        {
+            new List<KeyboardButton>{ new KeyboardButton(Language.today(lan)), new KeyboardButton(Language.tomorrow(lan))},
+            new List<KeyboardButton>{ new KeyboardButton(Language.nextpt(lan)), new KeyboardButton(Language.settings(lan))}
+        })
+        {
+            ResizeKeyboard = true
+        };
+}
         public static IReplyMarkup SettingsButtons(bool notifications, string lan)
         {
             string notificationsButton;
@@ -51,13 +53,12 @@ namespace PrayerTimeBot
             {
                 notificationsButton = Language.turnOnNotf(lan);
             }
-            return new ReplyKeyboardMarkup
+            return new ReplyKeyboardMarkup(new List<List<KeyboardButton>>
             {
-                Keyboard = new List<List<KeyboardButton>>
-                {
-                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.setLocation(lan), RequestLocation = true }, new KeyboardButton {Text = notificationsButton}},
-                    new List<KeyboardButton>{ new KeyboardButton { Text = Language.changeLanguage(lan)}, new KeyboardButton {Text = Language.backToMenu(lan)}}
-                },
+                new List<KeyboardButton>{ new KeyboardButton(Language.setLocation(lan)) {RequestLocation = true }, new KeyboardButton(notificationsButton)},
+                new List<KeyboardButton>{ new KeyboardButton(Language.changeLanguage(lan)), new KeyboardButton(Language.backToMenu(lan))}
+            })
+            {
                 ResizeKeyboard = true
             };
         }

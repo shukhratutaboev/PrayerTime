@@ -15,7 +15,7 @@ namespace PrayerTimeBot
         {
             _botClient = client;
             _logger = logger;
-            _botClient.StartReceiving(new DefaultUpdateHandler(handlers.HandleUpdateAsync, handlers.HandleErrorAsync), new CancellationToken());
+            _botClient.StartReceiving(new DefaultUpdateHandler(handlers.HandleUpdateAsync, handlers.HandleErrorAsync));
         }
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

@@ -1,6 +1,3 @@
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using PrayerTime.Services;
 using PrayerTimeBot.Services;
 using Telegram.Bot;
@@ -19,7 +16,7 @@ namespace PrayerTimeBot
         private static void Configure(HostBuilderContext context, IServiceCollection services)
         {
             services.AddMemoryCache();
-            services.AddSingleton<TelegramBotClient>(b => new TelegramBotClient("6255203800:AAFsCd7qaCiEMh6pKJqfUs75cOF15HdF8qo"));
+            services.AddSingleton<TelegramBotClient>(b => new TelegramBotClient("token"));
             services.AddHostedService<Bot>();
             services.AddTransient<HttpClientService>();
             services.AddTransient<IStorageService, InternalStorageService>();
